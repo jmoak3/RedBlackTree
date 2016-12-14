@@ -16,7 +16,7 @@ int main()
 	redBlack.traversePreOrder();
 	std::cout << std::endl;
 
-	redBlack.insert(5);
+	redBlack.insert(8);
 	redBlack.traversePreOrder();
 	std::cout << std::endl;
 	redBlack.traversePostOrder();
@@ -32,6 +32,38 @@ int main()
 	redBlack.traversePreOrder();
 	std::cout << std::endl;
 	redBlack.traversePostOrder();
+	std::cout << std::endl;
+
+	redBlack.insert(9);
+	redBlack.traversePreOrder();
+	std::cout << std::endl;
+	redBlack.traversePostOrder();
+	std::cout << std::endl;
+
+	redBlack.insert(15);
+	redBlack.traversePreOrder();
+	std::cout << std::endl;
+	redBlack.traversePostOrder();
+	std::cout << std::endl;
+
+	redBlack.insert(18);
+	redBlack.traversePreOrder();
+	std::cout << std::endl;
+	redBlack.traversePostOrder();
+	std::cout << std::endl;
+
+	redBlack.insert(0);
+	redBlack.traversePreOrder();
+	std::cout << std::endl;
+	redBlack.traversePostOrder();
+	std::cout << std::endl;
+
+	redBlack.insert(1);
+	redBlack.traversePreOrder();
+	std::cout << std::endl;
+	redBlack.traversePostOrder();
+	std::cout << std::endl;
+	redBlack.traverseInOrder();
 	std::cout << std::endl;
 
 

@@ -2,7 +2,6 @@
 
 bool Tree::handleRedness(pNode node)
 {
-	std::cout << "handling redness" << std::endl;
 	if (node == nullptr)
 	{
 		std::cout << "Hmm handleredness got a null?" << std::endl;
@@ -15,39 +14,47 @@ bool Tree::handleRedness(pNode node)
 		node->setRed(false);
 		return true;
 	}
-
-	if (!node->getParent()->getRed())
+	if (hasParent && !node->getParent()->getRed())
+	{
 		node->setRed(true);
-
-	if (!hasParent || !hasGrandparent || !hasUncle) return true; // done here
-	std::cout << "have parents"<< std::endl;
-
-	if (node->getParent()->getRed() && node->getUncle()->getRed())
+		return true;
+	}
+	if (!hasGrandparent)
 	{
-		node->getParent()->setRed(false);
+		std::cout << "no grandparents, issues here" << std::endl;
+		return true; // done here
+	}
+
+	pNode parent = node->getParent();
+	pNode grandparent = node->getGrandparent();
+	if (parent->getRed() && hasUncle && node->getUncle()->getRed())
+	{
+		parent->setRed(false);
 		node->getUncle()->setRed(false);
-		node->getGrandparent()->setRed(true);
-		std::cout << "We done here, come through again tho" << std::endl;
-		return handleRedness(node->getGrandparent());
+		grandparent->setRed(true);
+		return handleRedness(grandparent);
 	}
-	
-	
-	std::cout << "Should we rotate left?" << std::endl;
-	if (node->isRight() && node->getParent()->isLeft())
+
+	if (node->isRight() && parent->isLeft())
 	{
-		std::cout << "Rotating left" << std::endl;
-		node = rotateLeft(node->getParent());
+		node = rotateLeft(parent);
+		parent = node->getParent();
 	}
-	else if (node->isLeft() && node->getParent()->isRight())
+	else if (node->isLeft() && parent->isRight())
 	{
-		node = rotateRight(node->getParent());
+		node = rotateRight(parent);
+		parent = node->getParent();
 	}
-	node->getParent()->setRed(false);
-	node->getGrandparent()->setRed(true);
+	parent->setRed(false);
+	grandparent->setRed(true);
 	if (node->isLeft())
-		node = rotateRight(node->getGrandparent());
+	{
+		rotateRight(grandparent);
+	}
 	else if (node->isRight())
-		node = rotateLeft(node->getGrandparent());
+	{
+		rotateLeft(grandparent);
+	}
 
 	return true;
 }
@@ -55,7 +62,6 @@ bool Tree::handleRedness(pNode node)
 pNode Tree::newNodeHelper(int value, pNode parent)
 {
 	pNode newNode = std::shared_ptr<Node>(new Node(value, nullptr, nullptr, parent, true));
-	handleRedness(newNode);
 	return newNode;
 }
 
@@ -72,6 +78,7 @@ bool Tree::insertHelper(pNode node, int value)
 		{
 			pNode newNode = newNodeHelper(value, node);
 			node->setLeft(newNode);
+			handleRedness(node->getLeft());
 			return true;
 		}
 	}
@@ -85,6 +92,7 @@ bool Tree::insertHelper(pNode node, int value)
 		{
 			pNode newNode = newNodeHelper(value, node);
 			node->setRight(newNode);
+			handleRedness(node->getRight());
 			return true;
 		}
 	}
@@ -365,9 +373,10 @@ pNode Tree::rotateRight(pNode parent)
 void Tree::swapNodeValueAndRed(pNode n1, pNode n2)
 {
 	int value = n1->getValue();
-	bool red = n1->getRed();
-	n1->setValue(n1->getRight()->getValue());
+	n1->setValue(n2->getValue());
 	n2->setValue(value);
-	n1->setRed(n1->getRight()->getRed());
-	n2->getRight()->setRed(red);
+
+	bool red = n1->getRed();
+	n1->setRed(n2->getRed());
+	n2->setRed(red);
 }
